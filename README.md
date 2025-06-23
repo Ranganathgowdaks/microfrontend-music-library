@@ -1,149 +1,112 @@
 # 🎧 Microfrontend Music Library
 
-This is a role-based Music Library web application built using **Micro Frontend Architecture**, **React**, and **Vite**. It demonstrates dynamic integration using **Module Federation**, supports filtering, sorting, and role-based controls for managing songs.
+A modular React project demonstrating:
+
+- Micro Frontend Architecture
+- Role-based authentication (Admin & User)
+- Dynamic loading with Module Federation
+- Filtering, sorting, and grouping songs
 
 ---
 
-## 🔧 Features
+## 🔧 Tech Stack
 
-- 🎶 View, filter, sort, and group songs by **title**, **album**, or **artist**
-- 👥 **Role-based access**:  
-  - `admin` can view, filter, **add**, and **delete** songs  
-  - `user` can only view and filter
-- 🧩 Built with **Micro Frontends** using **Module Federation**
-- ⚡ Fast builds and dev setup with **Vite**
-- 📦 Clean UI with **responsive design** using **CSS Modules**
-- ✅ No backend required – all data is in memory using `Context API`
+- **React + Vite**
+- **Module Federation (via vite-plugin-federation)**
+- **Context API for Auth**
+- **Deployed on Vercel (Free Hosting)**
 
 ---
 
-## 🏗️ Architecture
+## 📂 Project Structure
 
-This project follows a **Micro Frontend setup** with:
+This project is split into **2 separate apps**:
 
-### 1. Host App (`host/`)
-- The main container
-- Handles auth and layout
-- Loads the Music Library remotely
-
-### 2. Music Library (`music-lib/`)
-- Remote app containing all music-related features
-- Exposed via Module Federation
-
-/music-mfe-workspace
-├── host/ ← Main App (Container)
-│ ├── src/
-│ │ ├── App.jsx
-│ │ ├── main.jsx
-│ │ └── context/AuthContext.jsx
-│ └── vite.config.js
-│
-├── music-lib/ ← Remote Micro Frontend
-│ ├── src/
-│ │ ├── MusicLibrary.jsx
-│ │ ├── context/SongContext.jsx
-│ │ └── components/
-│ │ ├── AddSongForm.jsx
-│ │ ├── DeleteButton.jsx
-│ │ ├── FilterSortGroupControls.jsx
-│ │ └── SongList.jsx
-│ └── vite.config.js
+| App              | Description                        | Hosted Link                                               |
+|------------------|------------------------------------|-----------------------------------------------------------|
+| **Host App**     | Main app with login & role switch  | [Main App (Host)](https://microfrontend-music-library-host.vercel.app) |
+| **Music Library**| Microfrontend loaded by host       | [Music Library (MFE)](https://microfrontend-music-library-p8wg.vercel.app/) |
 
 ---
 
-## 🔐 Roles & Demo Credentials
+## 🔐 Demo Credentials
 
-No actual login is required. You can choose the role from a dropdown in the UI:
+| Role   | Permission                 |
+|--------|----------------------------|
+| `admin`| Can view, add, and delete songs |
+| `user` | Can view and filter songs only  |
 
-| Role  | Permissions |
-|-------|-------------|
-| admin | View, filter, **add**, and **delete** songs |
-| user  | View and filter only |
-
-The role is stored in localStorage using a simple in-memory JWT simulation.
+> Just select role from dropdown and press **Login** (no password/email needed)
 
 ---
 
-## 📦 Dependencies (Install in both `host/` and `music-lib/`)
+## ▶️ How to Run Locally
+
+> Make sure you have **Node.js v16+** installed.
+
+### 1️⃣ Clone the Repos (Host & Music Library)
 
 ```bash
-npm install react react-dom
-npm install -D vite @vitejs/plugin-react
-npm install vite-plugin-federation
-🧪 How to Run Locally
-Step 1: Clone the Repository
-bash
-Copy
-Edit
-git clone https://github.com/Ranganathgowdaks/microfrontend-music-library.git
-cd microfrontend-music-library
-Step 2: Start the Remote App (music-lib)
-bash
-Copy
-Edit
-cd music-lib
+git clone https://github.com/<your-username>/microfrontend-music-library-host.git
+git clone https://github.com/<your-username>/microfrontend-music-library-lib.git
+2️⃣ Install Dependencies
+In both folders (host and lib), run:
 npm install
+3️⃣ Build the Music Library
+npm run build
+This generates the dist folder required for the host to load remote modules.
+
+4️⃣ Run Both Apps Locally
+Open two terminals:
+
+In Terminal 1 (Music Library - Port 5001):
+cd microfrontend-music-library-lib
 npm run dev
-Runs on: http://localhost:5000
-
-Ensure this in vite.config.js:
-
-js
-Copy
-Edit
-server: {
-  port: 5000,
+In Terminal 2 (Host App - Port 3000):
+Update the vite.config.js in host app to load the remote from localhost:
+remotes: {
+  musicLib: "http://localhost:5001/assets/remoteEntry.js"
 }
-Step 3: Start the Host App (host)
-bash
-Copy
-Edit
-cd ../host
-npm install
+Then:
+cd microfrontend-music-library-host
 npm run dev
-Runs on: http://localhost:5001
+🚀 Deployment Steps (Vercel)
+Push both projects to two separate GitHub repositories
 
-Ensure remote is linked:
+Deploy both on Vercel:
 
-js
+Set npm run build as build command
+
+Use dist as output directory
+
+In Host’s vite.config.js, point remote to production URL:
+
+remotes: {
+  musicLib: "https://microfrontend-music-library-lib.vercel.app/assets/remoteEntry.js"
+}
+Add vercel.json in lib with CORS headers:
+
+json
 Copy
 Edit
-remotes: {
-  musicLib: "http://localhost:5000/assets/remoteEntry.js"
+{
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "*" }
+      ]
+    }
+  ]
 }
-🌍 Deployment Instructions
-Deploy both apps independently using Vercel, Netlify, or similar platforms.
+📌 Features
+🎶 Clean UI to view songs
 
-💡 Update the host vite.config.js remote path to point to the deployed music-lib:
+🔍 Filter, sort, and group by Album / Artist / Title
 
-js
-Copy
-Edit
-remotes: {
-  musicLib: "https://your-music-lib-app.vercel.app/assets/remoteEntry.js"
-}
-🔧 Module Federation Explained
-music-lib exposes MusicLibrary as a remote module using vite-plugin-federation
+🔐 Role-based UI (Admin can Add/Delete, User can only View)
 
-host dynamically loads this remote during runtime
-
-This allows both apps to be built, deployed, and scaled independently
-
-🔐 Authentication System
-Mock JWT implementation with localStorage
-
-Role (admin or user) is persisted
-
-AuthContext provides login/logout functionality and is shared across the host
-
-🧠 Built With
-🛠 React (Functional Components + Hooks)
-
-⚡ Vite
-
-🎯 Module Federation (vite-plugin-federation)
-
-🎨 CSS Modules (responsive and clean)
-
-🧠 Context API (for songs and auth state)
+🧩 Microfrontend loaded via Module Federation
 
