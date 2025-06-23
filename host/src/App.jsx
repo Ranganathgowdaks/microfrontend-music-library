@@ -1,37 +1,12 @@
-import React, { Suspense } from "react";
-import { useAuth } from "./context/AuthContext";
+import React from "react";
+import MusicLibrary from "musicLib/MusicLibrary"; // ✅ This loads from remote
 import LoginForm from "./components/LoginForm";
-import Navbar from "./components/Navbar";
-
-const MusicLibrary = React.lazy(() => import("musicLib/MusicLibrary"));
+import { useAuth } from "./context/AuthContext";
 
 const App = () => {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
 
-  if (loading) {
-    return (
-      <p style={{ textAlign: "center", marginTop: "2rem" }}>
-        Checking login status...
-      </p>
-    );
-  }
-
-  if (!user) {
-    return <LoginForm />;
-  }
-
-  return (
-    <div>
-      <Navbar />
-      <Suspense
-        fallback={
-          <p style={{ textAlign: "center" }}>Loading Music Library...</p>
-        }
-      >
-        <MusicLibrary role={user.role} />
-      </Suspense>
-    </div>
-  );
+  return <div>{user ? <MusicLibrary role={user.role} /> : <LoginForm />}</div>;
 };
 
 export default App;
