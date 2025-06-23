@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import styles from "./LoginForm.module.css";
 
 const LoginForm = () => {
   const { login } = useAuth();
@@ -10,32 +11,23 @@ const LoginForm = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <h2>Select your role:</h2>
-      <select
-        value={selectedRole}
-        onChange={(e) => setSelectedRole(e.target.value)}
-      >
-        <option value="user">User</option>
-        <option value="admin">Admin</option>
-      </select>
-      <button onClick={handleSubmit} style={styles.button}>
-        Login
-      </button>
+    <div className={styles.wrapper}>
+      <div className={styles.card}>
+        <h2 className={styles.title}>🎭 Select Your Role</h2>
+        <select
+          className={styles.select}
+          value={selectedRole}
+          onChange={(e) => setSelectedRole(e.target.value)}
+        >
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button onClick={handleSubmit} className={styles.button}>
+          Login
+        </button>
+      </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    textAlign: "center",
-    marginTop: "5rem",
-  },
-  button: {
-    padding: "8px 16px",
-    marginTop: "1rem",
-    cursor: "pointer",
-  },
 };
 
 export default LoginForm;
