@@ -7,8 +7,10 @@ export default defineConfig({
     react(),
     federation({
       remotes: {
-        musicLib: "https://music-lib.vercel.app/assets/remoteEntry.js",
+        musicLib:
+          "https://microfrontend-music-library-lib.vercel.app/assets/remoteEntry.js",
       },
+
       shared: ["react", "react-dom"],
     }),
   ],
