@@ -1,5 +1,6 @@
 import React from "react";
 import { useAuth } from "../context/AuthContext";
+import styles from "./RoleHeader.module.css";
 
 const RoleHeader = () => {
   const { user, logout, login } = useAuth();
@@ -9,44 +10,29 @@ const RoleHeader = () => {
   };
 
   return (
-    <header style={styles.header}>
-      <div>
-        <strong>Current Role:</strong> {user.role.toUpperCase()}
+    <header className={styles.header}>
+      <div className={styles.info}>
+        <span className={styles.label}>Current Role:</span>{" "}
+        <strong className={styles.role}>{user.role.toUpperCase()}</strong>
       </div>
-      <div>
-        <label>
-          Switch Role:{" "}
-          <select value={user.role} onChange={handleRoleChange}>
+      <div className={styles.actions}>
+        <label className={styles.switchLabel}>
+          Switch Role:
+          <select
+            value={user.role}
+            onChange={handleRoleChange}
+            className={styles.select}
+          >
             <option value="user">User</option>
             <option value="admin">Admin</option>
           </select>
         </label>
-        <button onClick={logout} style={styles.logoutBtn}>
-          Logout
+        <button onClick={logout} className={styles.logoutBtn}>
+          🔒 Logout
         </button>
       </div>
     </header>
   );
-};
-
-const styles = {
-  header: {
-    background: "#f0f0f0",
-    padding: "1rem",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderBottom: "1px solid #ccc",
-  },
-  logoutBtn: {
-    marginLeft: "1rem",
-    padding: "6px 12px",
-    backgroundColor: "#ff5252",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-  },
 };
 
 export default RoleHeader;
